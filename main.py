@@ -73,8 +73,6 @@ class MainWindow(Funces):
 
         elif current == 'full_reg_second' and len(self.ui.lineEdit.text()) > 0:
             import random 
-
-            
             self.code = str(random.randint(100000, 999999))
             self.autoswap_thread = threading.Thread(target=lambda: mail.send_confirmation_email(self.email,self.code), daemon=True)
             self.autoswap_thread.start()
