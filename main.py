@@ -63,7 +63,7 @@ class MainWindow(Funces):
             self.enter_shortcut.activated.connect(self.handle_next_step)
             
             self.ui.pushButton_2.clicked.connect(self.handle_next_step)
-        
+            
 
     def handle_next_step(self):
         current = self.global_atribut

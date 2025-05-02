@@ -20,7 +20,8 @@ class MainInterface(QMainWindow):
         self.current_arrival_airport = None
         self.cost = 0 
         self.money = 0.01
-        self.current_zoom = 5  # Initial zoom level
+        self.current_zoom = 5  
+        self.distance_km = 0
         
         self.setup_combo_boxes()
         
@@ -32,21 +33,21 @@ class MainInterface(QMainWindow):
         self.ui.comboBox_5.currentIndexChanged.connect(self.update_arrival_airports_combo)
         self.ui.comboBox_6.currentIndexChanged.connect(self.update_selected_arrival_airport)
         
-        # Connect zoom buttons
+
         self.ui.pushButton_2.clicked.connect(self.zoom_in)
         self.ui.pushButton_3.clicked.connect(self.zoom_out)
         
+        self.ui.spinBox.valueChanged.connect(self.update)
+
         self.load_initial_map()
     
     def zoom_in(self):
-        """Increase zoom level"""
-        if self.current_zoom < 17:  # Maximum zoom level for Yandex Maps
+        if self.current_zoom < 17: 
             self.current_zoom += 1
             self.update_map_with_airports(force_zoom=self.current_zoom)
     
     def zoom_out(self):
-        """Decrease zoom level"""
-        if self.current_zoom > 1:  # Minimum zoom level
+        if self.current_zoom > 1:  
             self.current_zoom -= 1
             self.update_map_with_airports(force_zoom=self.current_zoom)
     
@@ -221,6 +222,11 @@ class MainInterface(QMainWindow):
             
             self.ui.comboBox_4.blockSignals(False)
             self.ui.comboBox_5.blockSignals(False)
+
+    def update(self):
+        self.money += 0.05 * self.money
+        self.ui.label_12.setText(time.strftime("%H:%M:%S",time.gmtime(self.distance_km* 3.91)))
+        self.ui.plainTextEdit.setPlainText(f'AVIATO COIN:\n {self.money:.4f}\nTON COIN:\n {self.money:.4f}\nBITCOIN:\n {(self.money/29452):.4f}\nRUB:\n {((self.money/29452)*7500000):.1f}')
     
     def update_map_with_airports(self, force_zoom=None):
         self.ui.label_8.setText("Loading map...")
@@ -259,15 +265,12 @@ class MainInterface(QMainWindow):
                        f'&apikey=9ebc7a29-d936-473f-86f6-4993671ab8a0')
                 
 
-                distance_km = distance / 1000
+                self.distance_km = distance / 1000
                 self.money = 0 
-                self.money += distance_km 
+                self.money += self.distance_km 
+                self.update()
 
 
-                self.ui.label_12.setText(time.strftime("%H:%M:%S",time.gmtime(distance_km* 3.91)))
-
-                self.ui.plainTextEdit.setPlainText(f'AVIATO COIN:\n {self.money:.4f}\nTON COIN:\n {self.money:.4f}\nBITCOIN:\n {(self.money/29452):.4f}\nRUB:\n {((self.money/29452)*7500000):.1f}')
-                       
             except (ValueError, TypeError) as e:
                 print(f"Ошибка координат: {str(e)}")
                 return
