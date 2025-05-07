@@ -313,6 +313,7 @@ class Ui_MainWindow(object):
         self.spinBox.setGeometry(QtCore.QRect(350, 290, 221, 31))
         self.spinBox.setStyleSheet("font: 11pt \"MS Shell Dlg 2\";\n"
 "text-align:center;")
+        self.spinBox.setMinimum(1)
         self.spinBox.setObjectName("spinBox")
         self.line_7 = QtWidgets.QFrame(self.tab)
         self.line_7.setGeometry(QtCore.QRect(50, 360, 531, 51))

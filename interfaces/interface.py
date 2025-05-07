@@ -220,6 +220,10 @@ class Ui_MainWindow(object):
         self.label_3.setFont(font)
         self.label_3.setAlignment(QtCore.Qt.AlignCenter)
         self.label_3.setObjectName("label_3")
+        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton.setGeometry(QtCore.QRect(410, 560, 301, 28))
+        self.pushButton.setFlat(True)
+        self.pushButton.setObjectName("pushButton")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -233,3 +237,4 @@ class Ui_MainWindow(object):
         self.pushButton_2.setText(_translate("MainWindow", "Далее"))
         self.label_2.setText(_translate("MainWindow", "/// AVIATO GROUP"))
         self.label_3.setText(_translate("MainWindow", "Введите почту:"))
+        self.pushButton.setText(_translate("MainWindow", "У меня уже есть аккаунт"))

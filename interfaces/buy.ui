@@ -618,6 +618,9 @@ background-color: rgba(255, 255, 255, 0.95);</string>
         <string notr="true">font: 11pt &quot;MS Shell Dlg 2&quot;;
 text-align:center;</string>
        </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
       </widget>
       <widget class="Line" name="line_7">
        <property name="geometry">

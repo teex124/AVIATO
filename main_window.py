@@ -1,11 +1,13 @@
 import requests
 from PyQt5.QtWidgets import QMainWindow, QComboBox, QMessageBox
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import QByteArray, Qt
+from PyQt5.QtCore import QByteArray, Qt, QDateTime
 from interfaces import buy
 import pyodbc, time
 from collections import defaultdict
 import math
+import datetime
+import pay_process
 
 class MainInterface(QMainWindow):
     def __init__(self):
@@ -22,6 +24,14 @@ class MainInterface(QMainWindow):
         self.money = 0.01
         self.current_zoom = 5  
         self.distance_km = 0
+        self.cash = 0 
+        self.doping_data = {} 
+        
+
+        current_time = QDateTime.currentDateTime().addSecs(10 * 3600)
+        self.ui.dateTimeEdit.setDateTime(current_time)
+        self.ui.dateTimeEdit.setMinimumDateTime(QDateTime.currentDateTime())
+        self.ui.dateTimeEdit.dateTimeChanged.connect(self.calculate_price_based_on_time)
         
         self.setup_combo_boxes()
         
@@ -33,13 +43,64 @@ class MainInterface(QMainWindow):
         self.ui.comboBox_5.currentIndexChanged.connect(self.update_arrival_airports_combo)
         self.ui.comboBox_6.currentIndexChanged.connect(self.update_selected_arrival_airport)
         
-
         self.ui.pushButton_2.clicked.connect(self.zoom_in)
         self.ui.pushButton_3.clicked.connect(self.zoom_out)
         
         self.ui.spinBox.valueChanged.connect(self.update)
+        self.ui.pushButton.clicked.connect(self.book_flight)
 
+        self.load_doping_data()
         self.load_initial_map()
+    
+    def calculate_price_based_on_time(self):
+        if not self.current_departure_airport or not self.current_arrival_airport:
+            return
+            
+
+        selected_time = self.ui.dateTimeEdit.dateTime()
+        current_time = QDateTime.currentDateTime()
+        
+        hours_diff = current_time.secsTo(selected_time) / 3600
+        
+        time_factor = max(0.5, min(2.0, 1.5 - (hours_diff / 48)))
+        
+
+        self.money = self.distance_km * time_factor
+        self.update()
+    
+    def book_flight(self):
+
+        if not self.current_departure_airport:
+            QMessageBox.warning(self, "Ошибка", "Пожалуйста, выберите аэропорт вылета!")
+            return
+            
+        if not self.current_arrival_airport:
+            QMessageBox.warning(self, "Ошибка", "Пожалуйста, выберите аэропорт прилета!")
+            return
+            
+        if self.current_departure_airport['code'] == self.current_arrival_airport['code']:
+            QMessageBox.warning(self, "Ошибка", "Аэропорты вылета и прилета не могут совпадать!")
+            return
+            
+
+        selected_time = self.ui.dateTimeEdit.dateTime()
+        current_time = QDateTime.currentDateTime()
+        
+        if selected_time <= current_time.addSecs(36000): 
+            QMessageBox.warning(self, "Ошибка", "Время вылета должно быть как минимум на 10 часов позже текущего времени!")
+            return
+            
+
+        flight_data = {
+        'departure': f"{self.current_departure_airport['name']} ({self.current_departure_airport['code']})",
+        'arrival': f"{self.current_arrival_airport['name']} ({self.current_arrival_airport['code']})",
+        'time': self.ui.dateTimeEdit.dateTime().toString('dd.MM.yyyy HH:mm'),
+        'price': f"{self.cash:.2f}",
+    }
+    
+
+        self.payment_window = pay_process.PaymentWindow(flight_data)
+        self.payment_window.show()
     
     def zoom_in(self):
         if self.current_zoom < 17: 
@@ -53,12 +114,31 @@ class MainInterface(QMainWindow):
     
     def setup_combo_boxes(self):
         self.load_airport_data()
+        self.load_doping_data()
         
         countries = sorted(list(self.country_city_map.keys()))
         for country in countries:
             self.ui.comboBox.addItem(country, country)
             self.ui.comboBox_4.addItem(country, country)
     
+    def load_doping_data(self):
+        cursor = connection().cursor()
+        
+        try:
+            cursor.execute("SELECT Doping, DopingCost FROM doping")
+            rows = cursor.fetchall()
+
+            for row in rows:
+                doping, doping_cost = row
+                self.doping_data[doping] = doping_cost
+            self.load_doping_data_on_combobox()
+        except Exception as e: 
+            QMessageBox.critical(self, "Ошибка", f"Не удалось загрузить данные о допинге: {str(e)}")
+
+    def load_doping_data_on_combobox(self):
+        for i in self.doping_data:
+            self.ui.comboBox_7.addItem(i)
+
     def load_airport_data(self):
         cursor = connection().cursor()
         try:
@@ -93,7 +173,7 @@ class MainInterface(QMainWindow):
                 })
                 
         except Exception as e:
-            QMessageBox.critical(self, f'Error: {e}')
+            QMessageBox.critical(self, "Ошибка", f"Не удалось загрузить данные об аэропортах: {str(e)}")
     
     def update_cities_combo(self, index):
         if index == 0:  
@@ -173,6 +253,7 @@ class MainInterface(QMainWindow):
             self.current_departure_airport = selected_airport
             self.update_combos_to_match_airport(selected_airport, is_departure=True)
             self.update_map_with_airports()
+            self.calculate_price_based_on_time()
     
     def update_selected_arrival_airport(self, index):
         if index == 0:  
@@ -192,6 +273,7 @@ class MainInterface(QMainWindow):
             self.current_arrival_airport = selected_airport
             self.update_combos_to_match_airport(selected_airport, is_departure=False)
             self.update_map_with_airports()
+            self.calculate_price_based_on_time()
     
     def update_combos_to_match_airport(self, airport, is_departure=True):
         if is_departure:
@@ -224,12 +306,17 @@ class MainInterface(QMainWindow):
             self.ui.comboBox_5.blockSignals(False)
 
     def update(self):
-        self.money += 0.05 * self.money
-        self.ui.label_12.setText(time.strftime("%H:%M:%S",time.gmtime(self.distance_km* 3.91)))
-        self.ui.plainTextEdit.setPlainText(f'AVIATO COIN:\n {self.money:.4f}\nTON COIN:\n {self.money:.4f}\nBITCOIN:\n {(self.money/29452):.4f}\nRUB:\n {((self.money/29452)*7500000):.1f}')
+        self.cash = self.money + (self.ui.spinBox.value() * 0.01)
+        self.ui.label_12.setText(time.strftime("%H:%M:%S", time.gmtime(self.distance_km * 3.91)))
+        self.ui.plainTextEdit.setPlainText(
+            f'AVIATO COIN:\n {self.cash:.4f}\n'
+            f'TON COIN:\n {self.cash:.4f}\n'
+            f'BITCOIN:\n {(self.cash/29452):.4f}\n'
+            f'RUB:\n {((self.cash/29452)*7500000):.1f}'
+        )
     
     def update_map_with_airports(self, force_zoom=None):
-        self.ui.label_8.setText("Loading map...")
+        self.ui.label_8.setText("Загрузка карты...")
         self.ui.label_8.setAlignment(Qt.AlignCenter)
         
         if not self.current_departure_airport and not self.current_arrival_airport:
@@ -257,22 +344,18 @@ class MainInterface(QMainWindow):
                 center_lon = (dep_lon + arr_lon) / 2
                 center_lat = (dep_lat + arr_lat) / 2
                 
-
                 url = (f'https://static-maps.yandex.ru/v1?ll={center_lon},{center_lat}'
                        f'&lang=ru_RU&size=450,450&z={zoom}'
                        f'&pt={dep_lon},{dep_lat},pm2dbl1~{arr_lon},{arr_lat},pm2rdl2'
                        f'&pl=c:ff0000,w:4,{dep_lon},{dep_lat},{arr_lon},{arr_lat}'
                        f'&apikey=9ebc7a29-d936-473f-86f6-4993671ab8a0')
                 
-
                 self.distance_km = distance / 1000
-                self.money = 0 
-                self.money += self.distance_km 
-                self.update()
-
+                self.money = self.distance_km  
+                self.calculate_price_based_on_time() 
 
             except (ValueError, TypeError) as e:
-                print(f"Ошибка координат: {str(e)}")
+                QMessageBox.warning(self, "Ошибка", f"Некорректные координаты: {str(e)}")
                 return
         elif self.current_departure_airport:
             try:
@@ -306,13 +389,13 @@ class MainInterface(QMainWindow):
                         Qt.SmoothTransformation
                     ))
                 else:
-                    self.ui.label_8.setText("Error: Invalid image data")
+                    self.ui.label_8.setText("Ошибка: неверные данные изображения")
             else:
-                self.ui.label_8.setText(f"Map loading error (HTTP {response.status_code})")
+                self.ui.label_8.setText(f"Ошибка загрузки карты (HTTP {response.status_code})")
         except requests.exceptions.RequestException as e:
-            self.ui.label_8.setText(f"Network error: {str(e)}")
+            self.ui.label_8.setText(f"Ошибка сети: {str(e)}")
         except Exception as e:
-            self.ui.label_8.setText(f"Error: {str(e)}")
+            self.ui.label_8.setText(f"Ошибка: {str(e)}")
     
     def calculate_distance(self, lat1, lon1, lat2, lon2):
         R = 6371000  
@@ -356,7 +439,7 @@ class MainInterface(QMainWindow):
             return 1
     
     def load_initial_map(self):
-        self.ui.label_8.setText("Loading initial map...")
+        self.ui.label_8.setText("Загрузка карты...")
         self.ui.label_8.setAlignment(Qt.AlignCenter)
         
         url = f'https://static-maps.yandex.ru/v1?ll=37.620070,55.753630&lang=ru_RU&size=450,450&z={self.current_zoom}&pt=37.620070,55.753630,pm2dbl1&apikey=9ebc7a29-d936-473f-86f6-4993671ab8a0'
@@ -372,13 +455,13 @@ class MainInterface(QMainWindow):
                         Qt.SmoothTransformation
                     ))
                 else:
-                    self.ui.label_8.setText("Error: Invalid image data")
+                    self.ui.label_8.setText("Ошибка: неверные данные изображения")
             else:
-                self.ui.label_8.setText(f"Map loading error (HTTP {response.status_code})")
+                self.ui.label_8.setText(f"Ошибка загрузки карты (HTTP {response.status_code})")
         except requests.exceptions.RequestException as e:
-            self.ui.label_8.setText(f"Network error: {str(e)}")
+            self.ui.label_8.setText(f"Ошибка сети: {str(e)}")
         except Exception as e:
-            self.ui.label_8.setText(f"Error: {str(e)}")
+            self.ui.label_8.setText(f"Ошибка: {str(e)}")
 
 
 def connection():
@@ -389,5 +472,5 @@ def connection():
             "Database=AVIATO_DB;" 
         )
     except Exception as e: 
-        print(f"Connection error: {e}")
+        print(f"Ошибка подключения: {e}")
         return None

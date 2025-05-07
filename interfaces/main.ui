@@ -304,6 +304,22 @@ background-color: rgba(255, 255, 255, 0.95);</string>
      </property>
     </widget>
    </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>560</y>
+      <width>301</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>У меня уже есть аккаунт</string>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>
