@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>593</width>
+    <height>545</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* Main Window */
+QMainWindow {
+	background-color: rgb(70, 19, 85);
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Buttons */
+QPushButton {
+    background-color: #6c5ce7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 19px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #5649c0;
+}
+
+QPushButton:pressed {
+    background-color: #3d36a0;
+}
+
+QPushButton:disabled {
+    background-color: #2d2d4d;
+    color: #7a7a8c;
+}
+
+/* Line Edits */
+QLineEdit {
+	color: rgb(255, 255, 255);
+    background-color: white;
+    border: 2px solid #3d3d5a;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    selection-background-color: #6c5ce7;
+}
+
+QLineEdit:focus {
+    border-color: gray;
+}
+
+/* Labels */
+QLabel {
+    font-size: 19px;
+}
+
+QLabel#headerLabel {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Combo Boxes */
+QComboBox {
+    background-color: #1a1a2e;
+    border: 2px solid #3d3d5a;
+    border-radius: 6px;
+    padding: 8px;
+    color: white;
+    min-width: 120px;
+}
+
+QComboBox:hover {
+    border-color: #6c5ce7;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 30px;
+    border-left: 1px solid #3d3d5a;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #1a1a2e;
+    color: white;
+    selection-background-color: #6c5ce7;
+    outline: none;
+}
+
+/* Scroll Bars */
+QScrollBar:vertical {
+    border: none;
+    background: #1a1a2e;
+    width: 10px;
+    margin: 0;
+}
+
+QScrollBar::handle:vertical {
+    background: #6c5ce7;
+    min-height: 20px;
+    border-radius: 4px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0;
+}
+
+/* Progress Bar */
+QProgressBar {
+    border: 1px solid #3d3d5a;
+    border-radius: 4px;
+    text-align: center;
+    color: white;
+}
+
+QProgressBar::chunk {
+    background-color: #6c5ce7;
+    width: 10px;
+}
+
+/* Tab Widget */
+QTabWidget::pane {
+    border: none;
+}
+
+QTabBar::tab {
+    background: #1a1a2e;
+    color: #a29bfe;
+    padding: 15px 60px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border: 1px solid #3d3d5a;
+    border-bottom: none;
+}
+
+QTabBar::tab:selected {
+    background: #6c5ce7;
+    color: white;
+    font-weight: bold;
+}
+
+/* Table View */
+QTableView {
+    background-color: #1a1a2e;
+    border: 1px solid #3d3d5a;
+    gridline-color: #3d3d5a;
+    alternate-background-color: #252541;
+    selection-background-color: #6c5ce7;
+    color: white;
+}
+
+QHeaderView::section {
+    background-color: #252541;
+    color: #a29bfe;
+    padding: 8px;
+    border: none;
+}
+
+/* Menu Bar */
+QMenuBar {
+    background-color: #0a0a1a;
+    color: white;
+}
+
+QMenuBar::item:selected {
+    background-color: #6c5ce7;
+}
+
+QMenu {
+    background-color: #1a1a2e;
+    border: 1px solid #3d3d5a;
+    color: white;
+}
+
+QMenu::item:selected {
+    background-color: #6c5ce7;
+}
+
+/* Status Bar */
+QStatusBar {
+    background-color: #1a1a2e;
+    color: #a29bfe;
+    border-top: 1px solid #3d3d5a;
+}
+
+/* Tool Tips */
+QToolTip {
+    background-color: #6c5ce7;
+    color: white;
+    border: none;
+    padding: 5px;
+    opacity: 230;
+}
+QStackedWidget{
+	color: white;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>70</y>
+      <width>601</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>20</y>
+      <width>311</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 245, 240);</string>
+    </property>
+    <property name="text">
+     <string>Ваш кошелек: </string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>30</y>
+      <width>141</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 245, 240);</string>
+    </property>
+    <property name="text">
+     <string>AVIATO ZENPAY</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>50</y>
+      <width>261</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 245, 240);</string>
+    </property>
+    <property name="text">
+     <string>Баланс:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>190</y>
+      <width>221</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Майнить блок</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>140</y>
+      <width>421</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 245, 240);</string>
+    </property>
+    <property name="text">
+     <string>Хэш сложность:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>110</y>
+      <width>431</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 245, 240);</string>
+    </property>
+    <property name="text">
+     <string>Намайнено блоков:</string>
+    </property>
+   </widget>
+   <widget class="Line" name="line_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>260</y>
+      <width>591</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>360</y>
+      <width>371</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>320</y>
+      <width>271</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 245, 240);</string>
+    </property>
+    <property name="text">
+     <string>Кошелек получателя:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>360</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>320</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 245, 240);</string>
+    </property>
+    <property name="text">
+     <string>Кол-во:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>460</y>
+      <width>221</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Перевести </string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

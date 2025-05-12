@@ -7,6 +7,8 @@ from PyQt5.QtCore import Qt
 import utilits.mail as mail
 import low_lvl_func
 from qt_func_enter import Funces
+import subprocess
+import os
 
 class MainWindow(Funces):
     def __init__(self):
@@ -14,6 +16,7 @@ class MainWindow(Funces):
         self.anim_start()
         self.logs = False
         self.is_login_mode = None 
+        self.log_email = None
 
         self.iter_enter()
         self.email = None
@@ -22,9 +25,12 @@ class MainWindow(Funces):
         self.password = None 
 
         self.log_password = None
-        self.log_email = None 
 
         self.ui.pushButton.clicked.connect(self.toggle_login_register)
+        
+
+        if hasattr(self.ui, 'pushButton_wallet'):
+            self.ui.pushButton_wallet.clicked.connect(self.open_wallet)
 
     def toggle_login_register(self):
         if self.is_login_mode:
@@ -45,12 +51,14 @@ class MainWindow(Funces):
     def log_read(self):
         try:
             with open("data.json", "r") as file:
+               
                 return json.load(file)  
         except:
             return None
 
     def iter_enter(self):
         if self.log_read() is None:
+            print(self.log_read())
             self.logs = False
         else:
             date = datetime.datetime(int(self.log_read()['date'].split('-')[0]),
@@ -107,6 +115,7 @@ class MainWindow(Funces):
             if self.ui.lineEdit.text() == self.code:
                 self.logger('Standart')
                 low_lvl_func.insert_data('users', (self.email, self.password), "user_mail, user_password")
+                self.log_email = self.email
                 self.show_window_enter(atribut='main')
 
         elif current == 'enter_frst':
@@ -131,6 +140,14 @@ class MainWindow(Funces):
             else: 
                 ...
         return False    
+
+    def open_wallet(self):
+        try:
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            wallet_path = os.path.join(current_dir, 'blockchain', 'pay_main.py')
+            subprocess.Popen([sys.executable, wallet_path])
+        except Exception as e:
+            QMessageBox.warning(self, "Ошибка", f"Не удалось открыть кошелек: {str(e)}")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

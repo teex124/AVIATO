@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>638</width>
+    <height>732</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>AVIATO: ZENPAY</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* Main Window */
+QMainWindow {
+	background-color: rgb(70, 19, 85);
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Buttons */
+QPushButton {
+    background-color: #6c5ce7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 19px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #5649c0;
+}
+
+QPushButton:pressed {
+    background-color: #3d36a0;
+}
+
+QPushButton:disabled {
+    background-color: #2d2d4d;
+    color: #7a7a8c;
+}
+
+/* Line Edits */
+QLineEdit {
+	color: rgb(255, 255, 255);
+    background-color: white;
+    border: 2px solid #3d3d5a;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    selection-background-color: #6c5ce7;
+}
+
+QLineEdit:focus {
+    border-color: gray;
+}
+
+/* Labels */
+QLabel {
+    font-size: 19px;
+}
+
+QLabel#headerLabel {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Combo Boxes */
+QComboBox {
+    background-color: #1a1a2e;
+    border: 2px solid #3d3d5a;
+    border-radius: 6px;
+    padding: 8px;
+    color: white;
+    min-width: 120px;
+}
+
+QComboBox:hover {
+    border-color: #6c5ce7;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 30px;
+    border-left: 1px solid #3d3d5a;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #1a1a2e;
+    color: white;
+    selection-background-color: #6c5ce7;
+    outline: none;
+}
+
+/* Scroll Bars */
+QScrollBar:vertical {
+    border: none;
+    background: #1a1a2e;
+    width: 10px;
+    margin: 0;
+}
+
+QScrollBar::handle:vertical {
+    background: #6c5ce7;
+    min-height: 20px;
+    border-radius: 4px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0;
+}
+
+/* Progress Bar */
+QProgressBar {
+    border: 1px solid #3d3d5a;
+    border-radius: 4px;
+    text-align: center;
+    color: white;
+}
+
+QProgressBar::chunk {
+    background-color: #6c5ce7;
+    width: 10px;
+}
+
+/* Tab Widget */
+QTabWidget::pane {
+    border: none;
+}
+
+QTabBar::tab {
+    background: #1a1a2e;
+    color: #a29bfe;
+    padding: 15px 60px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border: 1px solid #3d3d5a;
+    border-bottom: none;
+}
+
+QTabBar::tab:selected {
+    background: #6c5ce7;
+    color: white;
+    font-weight: bold;
+}
+
+/* Table View */
+QTableView {
+    background-color: #1a1a2e;
+    border: 1px solid #3d3d5a;
+    gridline-color: #3d3d5a;
+    alternate-background-color: #252541;
+    selection-background-color: #6c5ce7;
+    color: white;
+}
+
+QHeaderView::section {
+    background-color: #252541;
+    color: #a29bfe;
+    padding: 8px;
+    border: none;
+}
+
+/* Menu Bar */
+QMenuBar {
+    background-color: #0a0a1a;
+    color: white;
+}
+
+QMenuBar::item:selected {
+    background-color: #6c5ce7;
+}
+
+QMenu {
+    background-color: #1a1a2e;
+    border: 1px solid #3d3d5a;
+    color: white;
+}
+
+QMenu::item:selected {
+    background-color: #6c5ce7;
+}
+
+/* Status Bar */
+QStatusBar {
+    background-color: #1a1a2e;
+    color: #a29bfe;
+    border-top: 1px solid #3d3d5a;
+}
+
+/* Tool Tips */
+QToolTip {
+    background-color: #6c5ce7;
+    color: white;
+    border: none;
+    padding: 5px;
+    opacity: 230;
+}
+QStackedWidget{
+	color: white;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>631</width>
+      <height>731</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(244, 244, 244);</string>
+    </property>
+    <property name="tabPosition">
+     <enum>QTabWidget::North</enum>
+    </property>
+    <property name="tabShape">
+     <enum>QTabWidget::Rounded</enum>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <property name="elideMode">
+     <enum>Qt::ElideNone</enum>
+    </property>
+    <property name="documentMode">
+     <bool>false</bool>
+    </property>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Вход</string>
+     </attribute>
+     <widget class="QPlainTextEdit" name="plainTextEdit_2">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>30</y>
+        <width>561</width>
+        <height>311</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(170, 170, 255);
+border-radius: 10px;
+
+text-align: center;</string>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="plainText">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>390</y>
+        <width>421</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(0, 0, 0);</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>360</y>
+        <width>501</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Вводите сюда секретные слова   </string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_2">
+      <property name="geometry">
+       <rect>
+        <x>470</x>
+        <y>390</y>
+        <width>140</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Добавить</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_3">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>530</y>
+        <width>291</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>ВОЙТИ В КОШЕЛЕК</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_4">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>440</y>
+        <width>140</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Убрать</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Регистрация</string>
+     </attribute>
+     <widget class="QPlainTextEdit" name="plainTextEdit">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>30</y>
+        <width>561</width>
+        <height>331</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(170, 170, 255);
+border-radius: 10px;
+
+text-align: center;</string>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="plainText">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>530</y>
+        <width>301</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>СОЗДАТЬ КОШЕЛЕК</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>400</y>
+        <width>631</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Перепишите куда-то эти слова, они вам пригодятся для входа &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
