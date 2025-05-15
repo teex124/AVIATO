@@ -28,7 +28,7 @@ class MainWindow(Funces):
 
         self.ui.pushButton.clicked.connect(self.toggle_login_register)
         
-
+        # Добавляем кнопку для открытия кошелька
         if hasattr(self.ui, 'pushButton_wallet'):
             self.ui.pushButton_wallet.clicked.connect(self.open_wallet)
 

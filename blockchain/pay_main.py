@@ -1,56 +1,150 @@
-import os
-import json
-import datetime
+import sys
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
-from PyQt5.QtCore import Qt
-from interfaces import pay
-from blockchain.core.database import Database, UserRepository
-from blockchain.services.wallet_service import WalletService
+from interfaces.interface import Ui_MainWindow
+from services.wallet_service import WalletService
+from core.database import Database, WordRepository
+from wallet_app import WalletApp
 
-class PaymentMainWindow(QMainWindow):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.ui = pay.Ui_MainWindow()
+        self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         
-        self.db = Database()
-        self.user_repo = UserRepository(self.db)
+      
         self.wallet_service = WalletService()
+        self.db = Database()
+        self.word_repo = WordRepository(self.db)
         
-        self.setup_connections()
+ 
+        self.words = []
+        self.words_index = []
+        self.registration_words = []
+        self.user_words = []
+        self.wallet_window = None
+   
+        self.setup_ui()
+        self.connect_signals()
+        self.generate_words()
+
+    def setup_ui(self):
+  
+        self.setWindowTitle("AVIATO: ZENPAY")
+        self.ui.plainTextEdit.clear()
+        self.ui.plainTextEdit_2.clear()
+        self.ui.lineEdit.clear()
+
+    def connect_signals(self):
+    
+        self.ui.pushButton.clicked.connect(self.handle_registration)
+        self.ui.pushButton_2.clicked.connect(lambda: self.add_word(True))
+        self.ui.pushButton_4.clicked.connect(lambda: self.add_word(False))
+        self.ui.pushButton_3.clicked.connect(self.handle_login)
+
+    def generate_words(self):
+        """Generate new registration words"""
+        self.words = []
+        self.words_index = []
+        self.registration_words = []
+        self.ui.plainTextEdit.clear()
         
-    def setup_connections(self):
-        self.ui.pushButton.clicked.connect(self.process_payment)
+        for _ in range(5):
+            word_data = self.word_repo.get_random_word()
+            if word_data:
+                word_id, word = word_data
+                self.words.append((word_id, word))
+                self.registration_words.append(word)
+                self.words_index.append(word_id)
+                self.ui.plainTextEdit.appendPlainText(word)
+
+    def add_word(self, add: bool):
+
+        if add:
+            self.user_words.append(self.ui.lineEdit.text())
+        else:
+            self.user_words.pop()
+        self.ui.plainTextEdit_2.setPlainText(' '.join(self.user_words))
+
+    def handle_registration(self):
+     
+        reply = QMessageBox.question(
+            self,
+            'Подтверждение',
+            'Вы точно сохранили эти слова? После подтверждения будет создан аккаунт.',
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
         
-    def process_payment(self):
-        email = self.ui.lineEdit.text()
-        amount = float(self.ui.lineEdit_2.text())
+        if reply == QMessageBox.Yes:
+            wallet = self.wallet_service.create_account(self.words_index)
+            if wallet:
+                QMessageBox.information(
+                    self,
+                    'Успешно',
+                    f'Аккаунт успешно создан!\nВаш кошелек: {wallet}',
+                    QMessageBox.Ok
+                )
+                self.generate_words()
+            else:
+                QMessageBox.warning(
+                    self,
+                    'Ошибка',
+                    'Не удалось создать аккаунт',
+                    QMessageBox.Ok
+                )
+
+    def handle_login(self):
+  
+        entered_words = self.ui.plainTextEdit_2.toPlainText().split()
         
-        if not email or not amount:
-            QMessageBox.warning(self, "Ошибка", "Заполните все поля")
+        if not entered_words:
+            QMessageBox.warning(
+                self,
+                'Ошибка',
+                'Пожалуйста, введите слова для входа',
+                QMessageBox.Ok
+            )
             return
-            
-        user = self.user_repo.get_user_by_email(email)
-        
-        if not user:
-            QMessageBox.warning(self, "Ошибка", "Пользователь не найден")
+
+        if len(entered_words) != 5:
+            QMessageBox.warning(
+                self,
+                'Ошибка',
+                'Пожалуйста, введите ровно 5 слов',
+                QMessageBox.Ok
+            )
             return
-            
-        wallet_address = user[3]
-        current_balance = self.wallet_service.get_balance(wallet_address)
-        
-        if current_balance < amount:
-            QMessageBox.warning(self, "Ошибка", "Недостаточно средств")
-            return
-            
-        try:
-            self.wallet_service.transfer_coins(wallet_address, "XJ2Y34MNFR", amount)
-            self.user_repo.update_balance(email, current_balance - amount)
-            QMessageBox.information(self, "Успех", "Оплата прошла успешно")
-        except Exception as e:
-            QMessageBox.warning(self, "Ошибка", f"Ошибка при оплате: {str(e)}")
-            
-    def closeEvent(self, event):
-        if self.db:
-            self.db.close()
-        event.accept()                                                                               
+
+        wallet = self.wallet_service.verify_login(entered_words)
+        if wallet:
+            QMessageBox.information(
+                self,
+                'Успешно',
+                f'Вход выполнен успешно!\nВаш кошелек: {wallet}',
+                QMessageBox.Ok
+            )
+            self.open_wallet_window(wallet)
+        else:
+            QMessageBox.warning(
+                self,
+                'Ошибка',
+                'Неверные слова для входа',
+                QMessageBox.Ok
+            )
+
+    def open_wallet_window(self, wallet: str):
+        self.hide()
+        self.wallet_window = WalletApp(self.wallet_service)  # Pass the service
+        self.wallet_window.set_wallet(wallet)
+        self.wallet_window.show()
+
+
+def main():
+    app = QtWidgets.QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()                                                                               
