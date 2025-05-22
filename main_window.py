@@ -8,7 +8,7 @@ from collections import defaultdict
 import math
 import datetime
 import pay_process
-import random  # Add this import
+import random 
 
 class MainInterface(QMainWindow):
     def __init__(self):
@@ -27,7 +27,7 @@ class MainInterface(QMainWindow):
         self.distance_km = 0
         self.cash = 0 
         self.doping_data = {} 
-        self.log_email = None  # Add log_email attribute
+        self.log_email = None  
         
 
         current_time = QDateTime.currentDateTime().addSecs(10 * 3600)
@@ -107,10 +107,9 @@ class MainInterface(QMainWindow):
             finally:
                 conn.close()
         else:
-            # Generate random doping ID between 1 and 5 if no doping is selected
+   
             doping_id = random.randint(1, 5)
 
-        # Get user email from the database
         user_email = None
         if hasattr(self, 'log_email') and self.log_email:
             user_email = self.log_email
@@ -130,14 +129,6 @@ class MainInterface(QMainWindow):
             'doping_id': doping_id
         }
         
-        print("\n=== Передаваемые данные полета ===")
-        print(f"Email пользователя: {flight_data['user_email']}")
-        print(f"Код аэропорта вылета: {flight_data['input_local_code']}")
-        print(f"Код аэропорта прилета: {flight_data['enter_local_code']}")
-        print(f"Стоимость: {flight_data['price']} AVIATO COIN")
-        print(f"Время вылета: {flight_data['exit_time']}")
-        print(f"ID допинга: {flight_data['doping_id']}")
-        print("================================\n")
 
         self.payment_window = pay_process.PaymentWindow(flight_data)
         self.payment_window.show()

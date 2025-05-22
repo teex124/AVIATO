@@ -21,12 +21,12 @@ class PaymentWindow(QMainWindow):
         
         self.flight_data = flight_data or {}
         
-        # Initialize wallet service and repositories
+
         self.wallet_service = WalletService()
         self.db = Database()
         self.user_repo = UserRepository(self.db)
         
-        # Initialize and start the bot in a separate thread
+
         self.bot_thread = None
 
 

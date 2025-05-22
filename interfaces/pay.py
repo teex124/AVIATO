@@ -72,8 +72,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "ОПЛАТА"))
-        self.label_2.setText(_translate("MainWindow", "10:00"))
         self.label_3.setText(_translate("MainWindow", "Данные полета:"))
         self.label_4.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Совершите перевод</p><p align=\"center\"> по номеру кошелька: XJ2Y34MNFR</p></body></html>"))
         self.pushButton.setText(_translate("MainWindow", "Перевод совершен"))
